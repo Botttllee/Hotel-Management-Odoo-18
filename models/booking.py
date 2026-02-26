@@ -38,7 +38,7 @@ class booking(models.Model):
     # Booking Information
     kamar_booking_id = fields.Many2one("kamar.hotel", "Kamar")
     harga_kamar_id = fields.Many2one("tipe.hotel", "Harga", readonly=True)
-    hari = fields.Integer("Hari", default=1)
+    hari = fields.Integer("Hari", compute="_compute_hari", store=True, readonly=True)
     total_harga = fields.Float("Total Harga", compute="_compute_total_harga", store=True)
     history_ids = fields.One2many("booking.history.hotel", "booking_id", string="History")
 
@@ -47,19 +47,21 @@ class booking(models.Model):
         for rec in self:
             rec.harga_kamar_id = rec.kamar_booking_id.tipe_kamar
 
-    @api.onchange("check_in", "check_out")
-    def _onchange_check_date(self):
+    @api.depends("check_in", "check_out")
+    def _compute_hari(self):
         for rec in self:
             if rec.check_in and rec.check_out and rec.check_out > rec.check_in:
-                duration = rec.check_out - rec.check_in
-                rec.hari = max(duration.days, 1)
-            elif rec.hari < 1:
-                rec.hari = 1
+                rec.hari = max((rec.check_out.date() - rec.check_in.date()).days, 1)
+            else:
+                rec.hari = 0
 
     @api.depends("harga_kamar_id.harga", "hari")
     def _compute_total_harga(self):
         for rec in self:
-            rec.total_harga = rec.harga_kamar_id.harga * max(rec.hari, 1)
+            if rec.harga_kamar_id and rec.hari > 0:
+                rec.total_harga = rec.harga_kamar_id.harga * rec.hari
+            else:
+                rec.total_harga = 0
 
     def _create_booking_history(self, aksi):
         for rec in self:
@@ -73,11 +75,11 @@ class booking(models.Model):
                     }
                 )
 
-    @api.constrains("hari")
-    def _check_hari(self):
+    @api.constrains("check_in", "check_out")
+    def _check_booking_date(self):
         for rec in self:
-            if rec.hari < 1:
-                raise ValidationError(_("Hari minimal 1."))
+            if rec.check_in and rec.check_out and rec.check_out <= rec.check_in:
+                raise ValidationError(_("Tanggal Check Out harus lebih besar dari Check In."))
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -89,17 +91,12 @@ class booking(models.Model):
                 kamar = self.env["kamar.hotel"].browse(vals["kamar_booking_id"])
                 vals["harga_kamar_id"] = kamar.tipe_kamar.id
 
-            vals["hari"] = max(vals.get("hari", 1), 1)
-
         return super().create(vals_list)
 
     def write(self, vals):
         if "kamar_booking_id" in vals and "harga_kamar_id" not in vals:
             kamar = self.env["kamar.hotel"].browse(vals["kamar_booking_id"])
             vals["harga_kamar_id"] = kamar.tipe_kamar.id
-
-        if "hari" in vals:
-            vals["hari"] = max(vals["hari"], 1)
 
         return super().write(vals)
 

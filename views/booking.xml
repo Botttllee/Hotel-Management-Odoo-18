@@ -29,7 +29,7 @@
               <field name="nomor_telp_guest"/>
               <field name="kamar_booking_id"/>
               <field name="harga_kamar_id" readonly="1"/>
-              <field name="hari"/>
+              <field name="hari" readonly="1"/>
               <field name="total_harga" readonly="1"/>
               <field name="status_booking_id" readonly="1"/>
               <field name="check_in"/>

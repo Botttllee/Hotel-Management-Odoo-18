@@ -1,0 +1,12 @@
+<odoo>
+    <data>
+    <menuitem id="hotel_root" 
+    name="Hendrik Hotel" 
+    sequence="0"/>
+
+    <menuitem id="menu_config" 
+    name="Configuration" 
+    parent="hotel_root" 
+    sequence="99"/> 
+    </data>
+</odoo>

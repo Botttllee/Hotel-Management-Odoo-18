@@ -1,0 +1,70 @@
+<odoo>
+  <data>
+
+    <record id="seq_booking_hotel" model="ir.sequence">
+      <field name="name">Booking Hotel</field>
+      <field name="code">booking.hotel</field>
+      <field name="prefix">BKG/%(year)s/</field>
+      <field name="padding">4</field>
+      <field name="number_increment">1</field>
+      <field name="number_next">1</field>
+    </record>
+
+    <record id="view_form_booking" model="ir.ui.view">
+      <field name="name">booking.hotel.form</field>
+      <field name="model">booking.hotel</field>
+      <field name="arch" type="xml">
+        <form string="Booking Hotel">
+          <sheet>
+            <group string="Informasi Booking">
+              <field name="sequence" readonly="1"/>
+              <field name="nama_guest"/>
+              <field name="nomor_telp_guest"/>
+              <field name="kamar_booking_id"/>
+              <field name="hari"/>
+              <field name="total_harga" readonly="1"/>
+              <field name="status_booking_id" readonly="1"/>
+              <field name="check_in"/>
+              <field name="check_out"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_list_booking" model="ir.ui.view">
+      <field name="name">booking.hotel.list</field>
+      <field name="model">booking.hotel</field>
+      <field name="arch" type="xml">
+        <list string="List Booking Hotel">
+          <field name="sequence"/>
+          <field name="nama_guest"/>
+          <field name="hari"/>
+          <field name="total_harga"/>
+          <field name="status_booking_id"/>
+          <field name="check_in"/>
+          <field name="check_out"/>
+        </list>
+      </field>
+    </record>
+
+    <record id="action_view_booking" model="ir.actions.act_window">
+      <field name="name">Booking Hotel</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">booking.hotel</field>
+      <field name="view_mode">list,form</field>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+          Data booking hotel.
+        </p>
+      </field>
+    </record>
+
+    <menuitem id="menu_booking_hotel"
+              name="Booking Hotel"
+              parent="hotel_root"
+              action="action_view_booking"
+              sequence="1"/>
+
+  </data>
+</odoo>

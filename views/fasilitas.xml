@@ -1,0 +1,50 @@
+<odoo>
+  <data>
+
+    <record id="view_form_fasilitas" model="ir.ui.view">
+      <field name="name">fasilitas.hotel.form</field>
+      <field name="model">fasilitas.hotel</field>
+      <field name="arch" type="xml">
+          <form>
+              <sheet>
+                  <group string="Informasi Fasilitas Yang Ada">
+                      <field name="nama_fasilitas"/>
+                  </group>
+                  <notebook>
+              
+                  </notebook>
+              </sheet>
+          </form>
+      </field>
+    </record>
+
+    <record id="view_list_fasilitas" model="ir.ui.view">
+          <field name="name">fasilitas.hotel.list</field>
+          <field name="model">fasilitas.hotel</field>
+          <field name="arch" type="xml">
+              <list string="List fasilitas yang Ada Di Hotel">
+                    <field name="nama_fasilitas"/>
+              </list>
+          </field>
+    </record>        
+
+    <record id="action_view_fasilitas" model="ir.actions.act_window">
+        <field name="name">Fasilitas Kamar</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fasilitas.hotel</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Master data fasilitas Kamar
+            </p>
+        </field>
+    </record>      
+
+    <menuitem id="menu_fasilitas" 
+    name="Fasilitas" 
+    parent="menu_config" 
+    action="action_view_fasilitas" 
+    sequence="3"/>           
+
+  </data>
+</odoo>

@@ -1,0 +1,14 @@
+<odoo>
+  <data>
+    <record id="action_hotel_dashboard_visual" model="ir.actions.client">
+      <field name="name">Dashboard Advance</field>
+      <field name="tag">hotelv18.dashboard_visual_action</field>
+    </record>
+
+    <menuitem id="menu_hotel_dashboard_visual"
+              name="Dashboard Advance"
+              parent="hotel_root"
+              action="action_hotel_dashboard_visual"
+              sequence="2"/>
+  </data>
+</odoo>

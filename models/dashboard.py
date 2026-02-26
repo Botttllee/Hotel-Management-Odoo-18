@@ -27,8 +27,8 @@ class hotelDashboard(models.Model):
     today_checkin = fields.Integer("Check In Hari Ini", compute="_compute_dashboard")
     today_checkout = fields.Integer("Check Out Hari Ini", compute="_compute_dashboard")
 
-    @api.depends()
-    def _compute_dashboard(self):
+    @api.model
+    def _get_metrics(self):
         kamar_env = self.env["kamar.hotel"]
         booking_env = self.env["booking.hotel"]
 
@@ -42,23 +42,46 @@ class hotelDashboard(models.Model):
         start_today = datetime.combine(today, time.min)
         end_today = datetime.combine(today, time.max)
 
-        for rec in self:
-            rec.total_kamar = total_kamar
-            rec.available_kamar = available_kamar
-            rec.booking_kamar = booking_kamar
-            rec.booked_kamar = booked_kamar
-            rec.maintenance_kamar = maintenance_kamar
-            rec.occupancy_rate = ((booking_kamar + booked_kamar) / total_kamar * 100.0) if total_kamar else 0.0
-
-            rec.total_booking = booking_env.search_count([])
-            rec.draft_booking = booking_env.search_count([("state", "=", "draft")])
-            rec.confirmed_booking = booking_env.search_count([("state", "=", "confirmed")])
-            rec.checked_in_booking = booking_env.search_count([("state", "=", "checked_in")])
-            rec.done_booking = booking_env.search_count([("state", "=", "done")])
-            rec.cancelled_booking = booking_env.search_count([("state", "=", "cancelled")])
-            rec.today_checkin = booking_env.search_count(
+        return {
+            "total_kamar": total_kamar,
+            "available_kamar": available_kamar,
+            "booking_kamar": booking_kamar,
+            "booked_kamar": booked_kamar,
+            "maintenance_kamar": maintenance_kamar,
+            "occupancy_rate": ((booking_kamar + booked_kamar) / total_kamar * 100.0) if total_kamar else 0.0,
+            "total_booking": booking_env.search_count([]),
+            "draft_booking": booking_env.search_count([("state", "=", "draft")]),
+            "confirmed_booking": booking_env.search_count([("state", "=", "confirmed")]),
+            "checked_in_booking": booking_env.search_count([("state", "=", "checked_in")]),
+            "done_booking": booking_env.search_count([("state", "=", "done")]),
+            "cancelled_booking": booking_env.search_count([("state", "=", "cancelled")]),
+            "today_checkin": booking_env.search_count(
                 [("check_in", ">=", start_today), ("check_in", "<=", end_today)]
-            )
-            rec.today_checkout = booking_env.search_count(
+            ),
+            "today_checkout": booking_env.search_count(
                 [("check_out", ">=", start_today), ("check_out", "<=", end_today)]
-            )
+            ),
+        }
+
+    @api.model
+    def get_dashboard_metrics(self):
+        return self._get_metrics()
+
+    @api.depends()
+    def _compute_dashboard(self):
+        metrics = self._get_metrics()
+        for rec in self:
+            rec.total_kamar = metrics["total_kamar"]
+            rec.available_kamar = metrics["available_kamar"]
+            rec.booking_kamar = metrics["booking_kamar"]
+            rec.booked_kamar = metrics["booked_kamar"]
+            rec.maintenance_kamar = metrics["maintenance_kamar"]
+            rec.occupancy_rate = metrics["occupancy_rate"]
+            rec.total_booking = metrics["total_booking"]
+            rec.draft_booking = metrics["draft_booking"]
+            rec.confirmed_booking = metrics["confirmed_booking"]
+            rec.checked_in_booking = metrics["checked_in_booking"]
+            rec.done_booking = metrics["done_booking"]
+            rec.cancelled_booking = metrics["cancelled_booking"]
+            rec.today_checkin = metrics["today_checkin"]
+            rec.today_checkout = metrics["today_checkout"]

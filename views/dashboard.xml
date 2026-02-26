@@ -54,10 +54,10 @@
     </record>
 
     <menuitem id="menu_hotel_dashboard"
-              name="Dashboard"
+              name="Dashboard Simple"
               parent="hotel_root"
               action="action_hotel_dashboard"
-              sequence="0"/>
+              sequence="1"/>
 
   </data>
 </odoo>

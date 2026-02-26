@@ -13,11 +13,19 @@
     'application': True,
     'auto_install': False,
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base', 'web'],
+    'assets': {
+        'web.assets_backend': [
+            'hotelv18/static/src/scss/dashboard_visual.scss',
+            'hotelv18/static/src/js/dashboard_visual.js',
+            'hotelv18/static/src/xml/dashboard_visual.xml',
+        ],
+    },
     'data': [
         'security/ir.model.access.csv',
         'views/main.xml',
         'views/dashboard.xml',
+        'views/dashboard_visual.xml',
         'views/kamar.xml',
         'views/tipe.xml',
         'views/booking.xml',

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+  <t t-name="hotelv18.DashboardVisual">
+    <div class="o_hotel_dashboard_visual">
+      <div class="o_hotel_header">
+        <div>
+          <h1>Hotel Manager Dashboard</h1>
+          <p>Overview status kamar dan booking real-time (auto refresh 30 detik).</p>
+        </div>
+      </div>
+
+      <t t-if="state.loading">
+        <div class="o_hotel_info_box">Loading dashboard data...</div>
+      </t>
+      <t t-elif="state.error">
+        <div class="o_hotel_info_box o_hotel_error_box">Gagal mengambil data dashboard.</div>
+      </t>
+      <t t-else="">
+        <section class="o_hotel_card_grid">
+          <article class="o_hotel_card o_available">
+            <span>Available</span>
+            <strong t-esc="state.metrics.available_kamar || 0"/>
+          </article>
+          <article class="o_hotel_card o_booking">
+            <span>On Booking</span>
+            <strong t-esc="state.metrics.booking_kamar || 0"/>
+          </article>
+          <article class="o_hotel_card o_booked">
+            <span>Checked In</span>
+            <strong t-esc="state.metrics.booked_kamar || 0"/>
+          </article>
+          <article class="o_hotel_card o_maintenance">
+            <span>Maintenance</span>
+            <strong t-esc="state.metrics.maintenance_kamar || 0"/>
+          </article>
+        </section>
+
+        <section class="o_hotel_panel">
+          <div class="o_hotel_panel_head">
+            <h2>Occupancy</h2>
+            <strong><t t-esc="(state.metrics.occupancy_rate || 0).toFixed(2)"/>%</strong>
+          </div>
+          <div class="o_hotel_progress">
+            <div class="o_hotel_progress_bar" t-att-style="'width:' + occupancyWidth"/>
+          </div>
+          <small>Total kamar: <t t-esc="state.metrics.total_kamar || 0"/></small>
+        </section>
+
+        <section class="o_hotel_split">
+          <article class="o_hotel_panel">
+            <h2>Booking Status</h2>
+            <ul class="o_hotel_list">
+              <li><span>Draft</span><strong t-esc="state.metrics.draft_booking || 0"/></li>
+              <li><span>Confirmed</span><strong t-esc="state.metrics.confirmed_booking || 0"/></li>
+              <li><span>Checked In</span><strong t-esc="state.metrics.checked_in_booking || 0"/></li>
+              <li><span>Done</span><strong t-esc="state.metrics.done_booking || 0"/></li>
+              <li><span>Cancelled</span><strong t-esc="state.metrics.cancelled_booking || 0"/></li>
+              <li><span>Total Booking</span><strong t-esc="state.metrics.total_booking || 0"/></li>
+            </ul>
+          </article>
+
+          <article class="o_hotel_panel">
+            <h2>Aktivitas Hari Ini</h2>
+            <ul class="o_hotel_list">
+              <li><span>Check In Hari Ini</span><strong t-esc="state.metrics.today_checkin || 0"/></li>
+              <li><span>Check Out Hari Ini</span><strong t-esc="state.metrics.today_checkout || 0"/></li>
+            </ul>
+          </article>
+        </section>
+      </t>
+    </div>
+  </t>
+
+</templates>

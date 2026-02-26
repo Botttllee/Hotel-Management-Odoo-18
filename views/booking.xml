@@ -86,7 +86,7 @@
               name="Booking Hotel"
               parent="hotel_root"
               action="action_view_booking"
-              sequence="1"/>
+              sequence="3"/>
 
   </data>
 </odoo>

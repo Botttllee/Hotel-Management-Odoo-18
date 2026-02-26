@@ -17,10 +17,10 @@
     'data': [
         'security/ir.model.access.csv',
         'views/main.xml',
+        'views/dashboard.xml',
         'views/kamar.xml',
         'views/tipe.xml',
         'views/booking.xml',
         'views/fasilitas.xml',
     ],
 }
-

@@ -3,4 +3,5 @@ hotelv18.access_kamar_hotel,access_kamar_hotel,hotelv18.model_kamar_hotel,base.g
 hotelv18.access_tipe_hotel,access_tipe_hotel,hotelv18.model_tipe_hotel,base.group_user,1,1,1,1
 hotelv18.access_booking_hotel,access_booking_hotel,hotelv18.model_booking_hotel,base.group_user,1,1,1,1
 hotelv18.access_booking_history_hotel,access_booking_history_hotel,hotelv18.model_booking_history_hotel,base.group_user,1,1,1,1
+hotelv18.access_hotel_dashboard,access_hotel_dashboard,hotelv18.model_hotel_dashboard,base.group_user,1,0,0,0
 hotelv18.access_fasilitas_hotel,access_fasilitas_hotel,hotelv18.model_fasilitas_hotel,base.group_user,1,1,1,1

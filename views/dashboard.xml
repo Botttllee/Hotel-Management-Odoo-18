@@ -1,0 +1,63 @@
+<odoo>
+  <data>
+
+    <record id="hotel_dashboard_main" model="hotel.dashboard">
+      <field name="name">Dashboard Manager</field>
+    </record>
+
+    <record id="view_form_hotel_dashboard" model="ir.ui.view">
+      <field name="name">hotel.dashboard.form</field>
+      <field name="model">hotel.dashboard</field>
+      <field name="arch" type="xml">
+        <form string="Hotel Dashboard" create="false" edit="false" delete="false">
+          <sheet>
+            <group string="Ringkasan Kamar">
+              <group>
+                <field name="total_kamar" readonly="1"/>
+                <field name="available_kamar" readonly="1"/>
+                <field name="booking_kamar" readonly="1"/>
+                <field name="booked_kamar" readonly="1"/>
+                <field name="maintenance_kamar" readonly="1"/>
+                <field name="occupancy_rate" readonly="1"/>
+              </group>
+            </group>
+
+            <group string="Ringkasan Booking">
+              <group>
+                <field name="total_booking" readonly="1"/>
+                <field name="draft_booking" readonly="1"/>
+                <field name="confirmed_booking" readonly="1"/>
+                <field name="checked_in_booking" readonly="1"/>
+                <field name="done_booking" readonly="1"/>
+                <field name="cancelled_booking" readonly="1"/>
+              </group>
+            </group>
+
+            <group string="Aktivitas Hari Ini">
+              <group>
+                <field name="today_checkin" readonly="1"/>
+                <field name="today_checkout" readonly="1"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_hotel_dashboard" model="ir.actions.act_window">
+      <field name="name">Dashboard</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">hotel.dashboard</field>
+      <field name="res_id" ref="hotel_dashboard_main"/>
+      <field name="view_mode">form</field>
+      <field name="target">current</field>
+    </record>
+
+    <menuitem id="menu_hotel_dashboard"
+              name="Dashboard"
+              parent="hotel_root"
+              action="action_hotel_dashboard"
+              sequence="0"/>
+
+  </data>
+</odoo>

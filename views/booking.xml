@@ -15,18 +15,38 @@
       <field name="model">booking.hotel</field>
       <field name="arch" type="xml">
         <form string="Booking Hotel">
+          <header>
+            <button name="action_confirm_booking" string="Confirm Booking" type="object" class="btn-primary" invisible="state != 'draft'"/>
+            <button name="action_check_in" string="Check In" type="object" invisible="state != 'confirmed'"/>
+            <button name="action_check_out" string="Check Out" type="object" invisible="state != 'checked_in'"/>
+            <button name="action_cancel_booking" string="Cancel Booking" type="object" invisible="state in ('done','cancelled')"/>
+            <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,checked_in,done,cancelled"/>
+          </header>
           <sheet>
             <group string="Informasi Booking">
               <field name="sequence" readonly="1"/>
               <field name="nama_guest"/>
               <field name="nomor_telp_guest"/>
               <field name="kamar_booking_id"/>
+              <field name="harga_kamar_id" readonly="1"/>
               <field name="hari"/>
               <field name="total_harga" readonly="1"/>
               <field name="status_booking_id" readonly="1"/>
               <field name="check_in"/>
               <field name="check_out"/>
             </group>
+            <notebook>
+              <page string="History Tracking">
+                <field name="history_ids" readonly="1">
+                  <list>
+                    <field name="tanggal"/>
+                    <field name="nama_guest"/>
+                    <field name="kamar_id"/>
+                    <field name="aksi"/>
+                  </list>
+                </field>
+              </page>
+            </notebook>
           </sheet>
         </form>
       </field>
@@ -39,8 +59,10 @@
         <list string="List Booking Hotel">
           <field name="sequence"/>
           <field name="nama_guest"/>
+          <field name="kamar_booking_id"/>
           <field name="hari"/>
           <field name="total_harga"/>
+          <field name="state"/>
           <field name="status_booking_id"/>
           <field name="check_in"/>
           <field name="check_out"/>

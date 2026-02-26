@@ -23,12 +23,24 @@ class booking(models.Model):
     nomor_telp_guest = fields.Integer("No Tlp")
 
     status_booking_id = fields.Selection(related="kamar_booking_id.status_kamar", string="Status Booking")
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("confirmed", "Confirmed"),
+            ("checked_in", "Checked In"),
+            ("done", "Done"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="State",
+        default="draft",
+    )
 
     # Booking Information
     kamar_booking_id = fields.Many2one("kamar.hotel", "Kamar")
     harga_kamar_id = fields.Many2one("tipe.hotel", "Harga", readonly=True)
     hari = fields.Integer("Hari", default=1)
     total_harga = fields.Float("Total Harga", compute="_compute_total_harga", store=True)
+    history_ids = fields.One2many("booking.history.hotel", "booking_id", string="History")
 
     @api.onchange("kamar_booking_id")
     def _onchange_kamar_booking_id(self):
@@ -48,6 +60,18 @@ class booking(models.Model):
     def _compute_total_harga(self):
         for rec in self:
             rec.total_harga = rec.harga_kamar_id.harga * max(rec.hari, 1)
+
+    def _create_booking_history(self, aksi):
+        for rec in self:
+            if rec.kamar_booking_id and rec.nama_guest:
+                self.env["booking.history.hotel"].create(
+                    {
+                        "booking_id": rec.id,
+                        "kamar_id": rec.kamar_booking_id.id,
+                        "nama_guest": rec.nama_guest,
+                        "aksi": aksi,
+                    }
+                )
 
     @api.constrains("hari")
     def _check_hari(self):
@@ -78,3 +102,38 @@ class booking(models.Model):
             vals["hari"] = max(vals["hari"], 1)
 
         return super().write(vals)
+
+    def action_confirm_booking(self):
+        for rec in self:
+            if not rec.kamar_booking_id:
+                raise ValidationError(_("Silakan pilih kamar terlebih dahulu."))
+            if rec.kamar_booking_id.status_kamar in ("booking", "booked"):
+                raise ValidationError(_("Kamar sedang tidak available untuk dibooking."))
+
+            rec.kamar_booking_id.status_kamar = "booking"
+            rec.state = "confirmed"
+            rec._create_booking_history("confirm")
+
+    def action_check_in(self):
+        for rec in self:
+            if rec.state != "confirmed":
+                raise ValidationError(_("Booking harus di status Confirmed sebelum Check In."))
+            rec.kamar_booking_id.status_kamar = "booked"
+            rec.state = "checked_in"
+            rec._create_booking_history("checkin")
+
+    def action_check_out(self):
+        for rec in self:
+            if rec.state != "checked_in":
+                raise ValidationError(_("Booking harus di status Checked In sebelum Check Out."))
+            rec.kamar_booking_id.status_kamar = "available"
+            rec.state = "done"
+            rec._create_booking_history("checkout")
+
+    def action_cancel_booking(self):
+        for rec in self:
+            if rec.state in ("done", "cancelled"):
+                continue
+            rec.kamar_booking_id.status_kamar = "available"
+            rec.state = "cancelled"
+            rec._create_booking_history("cancel")

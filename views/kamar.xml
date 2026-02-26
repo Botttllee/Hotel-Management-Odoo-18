@@ -7,16 +7,26 @@
       <field name="arch" type="xml">
           <form>
             <header>
-                <field name="tipe_kamar" widget="statusbar"/>
+                <field name="status_kamar" widget="statusbar"/>
             </header>
             <sheet>
                 <group string="Informasi Kamar">
                     <field name="nama_kamar"/>
                     <field name="nomor_kamar"/>
                     <field name="tipe_kamar" widget="radio"/>
+                    <field name="current_guest" readonly="1"/>
                 </group>
                 <notebook>
-            
+                    <page string="History Booking">
+                        <field name="booking_history_ids" readonly="1">
+                            <list>
+                                <field name="tanggal"/>
+                                <field name="nama_guest"/>
+                                <field name="booking_id"/>
+                                <field name="aksi"/>
+                            </list>
+                        </field>
+                    </page>
                 </notebook>
             </sheet>
           </form>

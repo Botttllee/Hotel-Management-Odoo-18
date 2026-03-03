@@ -1,0 +1,26 @@
+<odoo>
+  <data>
+    <record id="action_booking_reporting" model="ir.actions.act_window">
+      <field name="name">Booking Reports</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">booking.hotel</field>
+      <field name="view_mode">list,form</field>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+          Pilih data booking untuk preview/download report receipt.
+        </p>
+      </field>
+    </record>
+
+    <menuitem id="menu_reporting_root"
+              name="Reporting"
+              parent="hotel_root"
+              sequence="20"/>
+
+    <menuitem id="menu_reporting_monthly_summary"
+              name="Monthly Summary"
+              parent="menu_reporting_root"
+              action="action_monthly_report_wizard"
+              sequence="1"/>
+  </data>
+</odoo>

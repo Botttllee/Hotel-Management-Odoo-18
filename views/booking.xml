@@ -16,6 +16,7 @@
       <field name="arch" type="xml">
         <form string="Booking Hotel">
           <header>
+            <button name="action_print_receipt" string="Print Receipt" type="object" class="btn-secondary"/>
             <button name="action_confirm_booking" string="Confirm Booking" type="object" class="btn-primary" invisible="state != 'draft'"/>
             <button name="action_check_in" string="Check In" type="object" invisible="state != 'confirmed'"/>
             <button name="action_check_out" string="Check Out" type="object" invisible="state != 'checked_in'"/>

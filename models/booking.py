@@ -134,3 +134,7 @@ class booking(models.Model):
             rec.kamar_booking_id.status_kamar = "available"
             rec.state = "cancelled"
             rec._create_booking_history("cancel")
+
+    def action_print_receipt(self):
+        self.ensure_one()
+        return self.env.ref("hotelv18.action_report_booking_receipt").report_action(self)

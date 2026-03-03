@@ -1,0 +1,53 @@
+<odoo>
+  <data>
+    <record id="view_form_monthly_report_wizard" model="ir.ui.view">
+      <field name="name">hotel.monthly.report.wizard.form</field>
+      <field name="model">hotel.monthly.report.wizard</field>
+      <field name="arch" type="xml">
+        <form string="Monthly Hotel Report">
+          <group string="Periode Laporan">
+            <field name="date_start"/>
+            <field name="date_end"/>
+          </group>
+
+          <group string="Ringkasan" col="4">
+            <field name="booking_count" readonly="1"/>
+            <field name="guest_count" readonly="1"/>
+            <field name="confirmed_count" readonly="1"/>
+            <field name="checked_in_count" readonly="1"/>
+            <field name="done_count" readonly="1"/>
+            <field name="cancelled_count" readonly="1"/>
+            <field name="gross_revenue" readonly="1"/>
+            <field name="realized_revenue" readonly="1"/>
+          </group>
+
+          <field name="booking_ids" readonly="1">
+            <list>
+              <field name="sequence"/>
+              <field name="nama_guest"/>
+              <field name="kamar_booking_id"/>
+              <field name="check_in"/>
+              <field name="check_out"/>
+              <field name="hari"/>
+              <field name="state"/>
+              <field name="total_harga"/>
+            </list>
+          </field>
+
+          <footer>
+            <button name="action_print_monthly_report" type="object" string="Print PDF" class="btn-primary"/>
+            <button special="cancel" string="Close" class="btn-secondary"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_monthly_report_wizard" model="ir.actions.act_window">
+      <field name="name">Monthly Hotel Summary</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">hotel.monthly.report.wizard</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+    </record>
+  </data>
+</odoo>

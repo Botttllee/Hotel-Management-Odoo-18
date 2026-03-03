@@ -24,11 +24,16 @@
     'data': [
         'security/ir.model.access.csv',
         'views/main.xml',
+        'views/config_settings.xml',
         'views/dashboard.xml',
         'views/dashboard_visual.xml',
+        'views/monthly_report_wizard.xml',
+        'views/reporting.xml',
         'views/kamar.xml',
         'views/tipe.xml',
         'views/booking.xml',
         'views/fasilitas.xml',
+        'report/booking_receipt_report.xml',
+        'report/monthly_hotel_summary_report.xml',
     ],
 }

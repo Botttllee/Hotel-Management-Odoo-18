@@ -1,0 +1,102 @@
+<odoo>
+  <data>
+    <record id="action_report_monthly_hotel_summary" model="ir.actions.report">
+      <field name="name">Monthly Hotel Summary</field>
+      <field name="model">hotel.monthly.report.wizard</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">hotelv18.report_monthly_hotel_summary</field>
+      <field name="report_file">hotelv18.report_monthly_hotel_summary</field>
+      <field name="print_report_name">'Monthly Hotel Summary - %s' % (object.date_start or '')</field>
+    </record>
+
+    <template id="report_monthly_hotel_summary">
+      <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="w">
+          <t t-call="web.external_layout">
+            <t t-set="report_theme" t-value="env['ir.config_parameter'].sudo().get_param('hotelv18.hotel_report_theme', 'classic')"/>
+            <t t-set="report_layout" t-value="env['ir.config_parameter'].sudo().get_param('hotelv18.hotel_report_layout', 'standard')"/>
+            <t t-set="show_financial" t-value="env['ir.config_parameter'].sudo().get_param('hotelv18.hotel_report_show_financial', 'True') == 'True'"/>
+            <t t-set="footer_note" t-value="env['ir.config_parameter'].sudo().get_param('hotelv18.hotel_report_footer_note', '')"/>
+            <t t-set="theme_color" t-value="{'classic': '#1d4ed8', 'forest': '#15803d', 'sunset': '#c2410c'}.get(report_theme, '#1d4ed8')"/>
+            <t t-set="theme_bg" t-value="{'classic': '#eff6ff', 'forest': '#f0fdf4', 'sunset': '#fff7ed'}.get(report_theme, '#eff6ff')"/>
+            <div class="page">
+              <h2 t-if="report_layout == 'standard'" t-att-style="'color:%s;' % theme_color">Monthly Hotel Summary</h2>
+              <h3 t-if="report_layout == 'compact'" t-att-style="'color:%s;' % theme_color">Monthly Hotel Summary</h3>
+              <p>
+                Periode:
+                <strong><span t-esc="w.date_start"/></strong>
+                -
+                <strong><span t-esc="w.date_end"/></strong>
+              </p>
+
+              <table t-attf-class="table o_main_table #{'table-sm' if report_layout == 'compact' else ''}">
+                <thead t-att-style="'background:%s;color:%s;' % (theme_bg, theme_color)">
+                  <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Total Booking</td><td><span t-esc="w.booking_count"/></td></tr>
+                  <tr><td>Total Guest</td><td><span t-esc="w.guest_count"/></td></tr>
+                  <tr><td>Confirmed</td><td><span t-esc="w.confirmed_count"/></td></tr>
+                  <tr><td>Checked In</td><td><span t-esc="w.checked_in_count"/></td></tr>
+                  <tr><td>Done</td><td><span t-esc="w.done_count"/></td></tr>
+                  <tr><td>Cancelled</td><td><span t-esc="w.cancelled_count"/></td></tr>
+                  <tr t-if="show_financial">
+                    <td>Gross Revenue</td>
+                    <td>
+                      <span t-field="w.gross_revenue"
+                            t-options='{"widget": "monetary", "display_currency": env.company.currency_id}'/>
+                    </td>
+                  </tr>
+                  <tr t-if="show_financial">
+                    <td>Realized Revenue (Done)</td>
+                    <td>
+                      <span t-field="w.realized_revenue"
+                            t-options='{"widget": "monetary", "display_currency": env.company.currency_id}'/>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3>Detail Guest Stay</h3>
+              <table t-attf-class="table o_main_table #{'table-sm' if report_layout == 'compact' else ''}">
+                <thead t-att-style="'background:%s;color:%s;' % (theme_bg, theme_color)">
+                  <tr>
+                    <th>Booking No</th>
+                    <th>Guest</th>
+                    <th>Kamar</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Hari</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr t-foreach="w.booking_ids" t-as="b">
+                    <td><span t-esc="b.sequence"/></td>
+                    <td><span t-esc="b.nama_guest or '-'"/></td>
+                    <td><span t-esc="b.kamar_booking_id.display_name or '-'"/></td>
+                    <td><span t-esc="b.check_in or '-'"/></td>
+                    <td><span t-esc="b.check_out or '-'"/></td>
+                    <td><span t-esc="b.hari"/></td>
+                    <td><span t-esc="dict(b._fields['state'].selection).get(b.state, '-')"/></td>
+                    <td>
+                      <span t-field="b.total_harga"
+                            t-options='{"widget": "monetary", "display_currency": env.company.currency_id}'/>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="mt16" t-if="footer_note">
+                <small t-esc="footer_note"/>
+              </div>
+            </div>
+          </t>
+        </t>
+      </t>
+    </template>
+  </data>
+</odoo>

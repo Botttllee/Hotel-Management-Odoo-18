@@ -1,0 +1,88 @@
+<odoo>
+  <data>
+    <record id="action_report_booking_receipt" model="ir.actions.report">
+      <field name="name">Booking Receipt</field>
+      <field name="model">booking.hotel</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">hotelv18.report_booking_receipt</field>
+      <field name="report_file">hotelv18.report_booking_receipt</field>
+      <field name="binding_model_id" ref="model_booking_hotel"/>
+      <field name="binding_type">report</field>
+      <field name="print_report_name">'Booking Receipt - %s' % (object.sequence or 'BOOKING')</field>
+    </record>
+
+    <template id="report_booking_receipt">
+      <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+          <t t-call="web.external_layout">
+            <t t-set="report_theme" t-value="env['ir.config_parameter'].sudo().get_param('hotelv18.hotel_report_theme', 'classic')"/>
+            <t t-set="report_layout" t-value="env['ir.config_parameter'].sudo().get_param('hotelv18.hotel_report_layout', 'standard')"/>
+            <t t-set="show_guest_phone" t-value="env['ir.config_parameter'].sudo().get_param('hotelv18.hotel_report_show_guest_phone', 'True') == 'True'"/>
+            <t t-set="footer_note" t-value="env['ir.config_parameter'].sudo().get_param('hotelv18.hotel_report_footer_note', '')"/>
+            <t t-set="theme_color" t-value="{'classic': '#1d4ed8', 'forest': '#15803d', 'sunset': '#c2410c'}.get(report_theme, '#1d4ed8')"/>
+            <t t-set="theme_bg" t-value="{'classic': '#eff6ff', 'forest': '#f0fdf4', 'sunset': '#fff7ed'}.get(report_theme, '#eff6ff')"/>
+            <div class="page">
+              <h2 t-if="report_layout == 'standard'" t-att-style="'color:%s;' % theme_color">Booking Receipt</h2>
+              <h3 t-if="report_layout == 'compact'" t-att-style="'color:%s;' % theme_color">Booking Receipt</h3>
+              <table t-attf-class="table o_main_table table-borderless #{'table-sm' if report_layout == 'compact' else ''}">
+                <tbody>
+                  <tr>
+                    <td><strong>Booking Number</strong></td>
+                    <td><span t-esc="o.sequence"/></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Guest</strong></td>
+                    <td><span t-esc="o.nama_guest or '-'"/></td>
+                  </tr>
+                  <tr t-if="show_guest_phone">
+                    <td><strong>No Telp</strong></td>
+                    <td><span t-esc="o.nomor_telp_guest or '-'"/></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Kamar</strong></td>
+                    <td><span t-esc="o.kamar_booking_id.display_name or '-'"/></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Tipe / Harga per Hari</strong></td>
+                    <td>
+                      <span t-esc="o.harga_kamar_id.display_name or '-'"/> /
+                      <span t-field="o.harga_kamar_id.harga"
+                            t-options='{"widget": "monetary", "display_currency": env.company.currency_id}'/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Check In</strong></td>
+                    <td><span t-esc="o.check_in or '-'"/></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Check Out</strong></td>
+                    <td><span t-esc="o.check_out or '-'"/></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Hari</strong></td>
+                    <td><span t-esc="o.hari"/></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Status</strong></td>
+                    <td><span t-esc="dict(o._fields['state'].selection).get(o.state, '-')"/></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="mt16" t-att-style="'text-align:right;background:%s;padding:8px;border-radius:6px;' % theme_bg">
+                <h3>
+                  Total:
+                  <span t-field="o.total_harga" t-att-style="'color:%s;' % theme_color"
+                        t-options='{"widget": "monetary", "display_currency": env.company.currency_id}'/>
+                </h3>
+              </div>
+              <div class="mt16" t-if="footer_note">
+                <small t-esc="footer_note"/>
+              </div>
+            </div>
+          </t>
+        </t>
+      </t>
+    </template>
+  </data>
+</odoo>

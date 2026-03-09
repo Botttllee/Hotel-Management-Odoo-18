@@ -17,6 +17,7 @@ class booking(models.Model):
         readonly=True,
         default=lambda self: _("New"),
     )
+    
     check_in = fields.Datetime("Check In")
     check_out = fields.Datetime("Check Out")
     nama_guest = fields.Char("Nama Guest")
